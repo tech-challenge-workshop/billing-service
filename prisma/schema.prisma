@@ -7,3 +7,43 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum QuoteStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+
+  @@map("quote_status")
+}
+
+enum PaymentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REFUNDED
+
+  @@map("payment_status")
+}
+
+model Quote {
+  workOrderId String      @id @map("work_order_id") @db.Uuid
+  amountCents Int         @map("amount_cents")
+  status      QuoteStatus
+  createdAt   DateTime    @map("created_at")
+  updatedAt   DateTime    @map("updated_at")
+
+  @@map("quotes")
+}
+
+model Payment {
+  id          String        @id @db.Uuid
+  workOrderId String        @unique @map("work_order_id") @db.Uuid
+  amountCents Int           @map("amount_cents")
+  status      PaymentStatus
+  externalId  String?       @map("external_id")
+  createdAt   DateTime      @map("created_at")
+  updatedAt   DateTime      @map("updated_at")
+
+  @@map("payments")
+}
