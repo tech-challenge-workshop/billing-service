@@ -1,5 +1,7 @@
 import { Controller, Get, Inject, Param, ParseUUIDPipe, Post, UseFilters } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { Roles } from '../../../shared/auth/roles.decorator'
+import { UserRole } from '../../../shared/auth/jwt-payload'
 import { MESSAGE_BUS } from '../../../shared/messaging/message-bus'
 import type { MessageBus } from '../../../shared/messaging/message-bus'
 import { SagaMessage } from '../../../shared/messaging/saga-messages'
@@ -9,6 +11,7 @@ import { GetQuoteUseCase } from '../application/use-cases/get-quote.use-case'
 import { BillingExceptionFilter } from './filters/billing-exception.filter'
 
 @ApiTags('quotes')
+@ApiBearerAuth()
 @UseFilters(BillingExceptionFilter)
 @Controller('quotes')
 export class QuotesController {
@@ -21,12 +24,14 @@ export class QuotesController {
   ) {}
 
   @Get(':workOrderId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get the quote for a work order' })
   get(@Param('workOrderId', ParseUUIDPipe) workOrderId: string) {
     return this.getQuote.execute(workOrderId)
   }
 
   @Post(':workOrderId/approve')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Customer approves the quote (approval webhook)' })
   async approve(@Param('workOrderId', ParseUUIDPipe) workOrderId: string) {
     const output = await this.approveQuote.execute(workOrderId)
@@ -35,6 +40,7 @@ export class QuotesController {
   }
 
   @Post(':workOrderId/reject')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Customer rejects the quote (approval webhook)' })
   async reject(@Param('workOrderId', ParseUUIDPipe) workOrderId: string) {
     const output = await this.rejectQuote.execute(workOrderId)

@@ -26,6 +26,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "4.0.4",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "11.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "11.4.5",
     "@prisma/adapter-pg": "7.8.0",
@@ -66,22 +67,41 @@
     "typescript-eslint": "^8.20.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@prisma/engines", "prisma"],
-    "ignoredBuiltDependencies": ["@scarf/scarf", "unrs-resolver"]
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf",
+      "unrs-resolver"
+    ]
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": ".",
-    "roots": ["<rootDir>/src", "<rootDir>/tests"],
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/tests"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
-    "testPathIgnorePatterns": ["<rootDir>/tests/e2e/"],
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests/e2e/"
+    ],
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": ["src/**/*.(t|j)s", "!src/generated/**", "!src/main.ts"],
+    "collectCoverageFrom": [
+      "src/**/*.(t|j)s",
+      "!src/generated/**",
+      "!src/main.ts"
+    ],
     "coverageDirectory": "coverage",
     "testEnvironment": "node"
   }
