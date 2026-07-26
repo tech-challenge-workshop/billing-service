@@ -12,6 +12,7 @@ import type {
   ChargeResult,
   PaymentGateway,
 } from '../../../src/modules/billing/application/ports/payment.gateway'
+import type { TraceSpan, TracingPort } from '../../../src/shared/tracing/tracing.port'
 
 export function quoteWith(overrides: Partial<QuoteProps> = {}): Quote {
   return Quote.restore({
@@ -84,5 +85,11 @@ export class FakePaymentGateway implements PaymentGateway {
   refund(externalId: string): Promise<void> {
     this.refunded.push(externalId)
     return Promise.resolve()
+  }
+}
+
+export class FakeTracingPort implements TracingPort {
+  startSpan(): TraceSpan {
+    return { finish: () => {}, error: () => {} }
   }
 }
