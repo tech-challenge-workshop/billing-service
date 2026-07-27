@@ -6,12 +6,12 @@ import { validateEnv } from './shared/config/env'
 import { PrismaModule } from './shared/database/prisma.module'
 import { HealthController } from './shared/health/health.controller'
 import { MessagingModule } from './shared/messaging/messaging.module'
-import { TracingModule } from './shared/tracing/tracing.module'
+import { ObservabilityModule } from './shared/observability/observability.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
-    TracingModule,
+    ObservabilityModule,
     AuthModule,
     MessagingModule,
     PrismaModule,

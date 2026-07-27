@@ -7,8 +7,8 @@ import { PAYMENT_REPOSITORY } from '../ports/payment.repository'
 import type { PaymentRepository } from '../ports/payment.repository'
 import { PAYMENT_GATEWAY } from '../ports/payment.gateway'
 import type { PaymentGateway } from '../ports/payment.gateway'
-import { TRACING_PORT } from '../../../../shared/tracing/tracing.port'
-import type { TracingPort } from '../../../../shared/tracing/tracing.port'
+import { TRACING_PORT } from '../../../../shared/observability/tracing.port'
+import type { TracingPort } from '../../../../shared/observability/tracing.port'
 
 export interface ConfirmPaymentResult {
   confirmed: boolean
@@ -27,12 +27,10 @@ export class ConfirmPaymentUseCase {
     private readonly tracing: TracingPort,
   ) {}
 
-  async execute(workOrderId: string): Promise<ConfirmPaymentResult> {
-    const span = this.tracing.startSpan('billing.confirm_payment', { workOrderId })
-    try {
+  execute(workOrderId: string): Promise<ConfirmPaymentResult> {
+    return this.tracing.withSpan('billing.confirm_payment', { workOrderId }, async () => {
       const existing = await this.payments.findByWorkOrderId(workOrderId)
       if (existing) {
-        span.finish()
         return { confirmed: existing.isConfirmed }
       }
 
@@ -51,11 +49,7 @@ export class ConfirmPaymentUseCase {
       }
       await this.payments.create(payment)
 
-      span.finish()
       return { confirmed: result.approved }
-    } catch (err) {
-      span.error(err as Error)
-      throw err
-    }
+    })
   }
 }

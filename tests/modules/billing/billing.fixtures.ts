@@ -12,7 +12,7 @@ import type {
   ChargeResult,
   PaymentGateway,
 } from '../../../src/modules/billing/application/ports/payment.gateway'
-import type { TraceSpan, TracingPort } from '../../../src/shared/tracing/tracing.port'
+import type { TracingPort } from '../../../src/shared/observability/tracing.port'
 
 export function quoteWith(overrides: Partial<QuoteProps> = {}): Quote {
   return Quote.restore({
@@ -89,7 +89,9 @@ export class FakePaymentGateway implements PaymentGateway {
 }
 
 export class FakeTracingPort implements TracingPort {
-  startSpan(): TraceSpan {
-    return { finish: () => {}, error: () => {} }
+  readonly spans: string[] = []
+  withSpan<T>(name: string, _tags: Record<string, string>, fn: () => Promise<T>): Promise<T> {
+    this.spans.push(name)
+    return fn()
   }
 }
