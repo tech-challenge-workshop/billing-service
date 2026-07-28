@@ -1,3 +1,6 @@
+# Datadog Agent is shared across services and started by work-order-service's
+# docker-compose.yml (same convention as the shared RabbitMQ broker). Point
+# DD_AGENT_HOST at that agent's published APM port (see .env.example).
 services:
   postgres:
     image: postgres:16-alpine

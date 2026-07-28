@@ -5,6 +5,7 @@ import {
   FakePaymentGateway,
   FakePaymentRepository,
   FakeQuoteRepository,
+  FakeTracingPort,
   quoteWith,
 } from '../../billing.fixtures'
 
@@ -18,7 +19,7 @@ describe('ConfirmPaymentUseCase', () => {
     payments = new FakePaymentRepository()
     quotes = new FakeQuoteRepository()
     gateway = new FakePaymentGateway()
-    useCase = new ConfirmPaymentUseCase(payments, quotes, gateway)
+    useCase = new ConfirmPaymentUseCase(payments, quotes, gateway, new FakeTracingPort())
   })
 
   it('confirms the payment when the gateway approves', async () => {

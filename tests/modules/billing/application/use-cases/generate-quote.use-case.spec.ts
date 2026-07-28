@@ -1,5 +1,5 @@
 import { GenerateQuoteUseCase } from '../../../../../src/modules/billing/application/use-cases/generate-quote.use-case'
-import { FakeQuoteRepository } from '../../billing.fixtures'
+import { FakeQuoteRepository, FakeTracingPort } from '../../billing.fixtures'
 
 describe('GenerateQuoteUseCase', () => {
   let quotes: FakeQuoteRepository
@@ -7,7 +7,7 @@ describe('GenerateQuoteUseCase', () => {
 
   beforeEach(() => {
     quotes = new FakeQuoteRepository()
-    useCase = new GenerateQuoteUseCase(quotes)
+    useCase = new GenerateQuoteUseCase(quotes, new FakeTracingPort())
   })
 
   it('creates a pending quote from the total', async () => {
