@@ -1,5 +1,9 @@
 # billing-service
 
+[![ci](https://github.com/tech-challenge-workshop/billing-service/actions/workflows/ci.yml/badge.svg)](https://github.com/tech-challenge-workshop/billing-service/actions/workflows/ci.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=tech-challenge-workshop_billing-service&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tech-challenge-workshop_billing-service)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=tech-challenge-workshop_billing-service&metric=coverage)](https://sonarcloud.io/component_measures?id=tech-challenge-workshop_billing-service&metric=coverage)
+
 Quotes and payments service for a vehicle repair shop platform — FIAP SOAT Tech Challenge (Phase 4).
 
 One of four independent services:
@@ -35,6 +39,12 @@ This service is a **participant** of the work order saga orchestrated by `work-o
 | `payment.refund` | Refunding the payment (compensation) |
 
 It also publishes `quote.approved` / `quote.rejected` when the customer approves or rejects — the external decision that unblocks the saga.
+
+The saga is **orchestrated**, not choreographed: this service reacts to commands
+and replies with events, and never decides what happens next. The reasoning
+behind that choice is documented in the
+[work-order-service README](https://github.com/tech-challenge-workshop/work-order-service#why-the-saga-is-orchestrated),
+where the orchestrator lives.
 
 ## Authentication
 
@@ -117,6 +127,22 @@ CI builds and pushes the image to `ghcr.io/tech-challenge-workshop/billing-servi
 | `pnpm test:e2e` | End-to-end tests (requires `docker compose up -d`) |
 | `pnpm test:ci` | Combined unit + e2e coverage — the gate CI enforces |
 | `pnpm lint` / `pnpm lint:check` | ESLint with/without autofix |
+
+## Test coverage
+
+The badges at the top are live: they come from the SonarCloud analysis CI runs
+on every push to `main`. Full report, file by file:
+**[sonarcloud.io › billing-service](https://sonarcloud.io/component_measures?id=tech-challenge-workshop_billing-service&metric=coverage)**
+
+`pnpm test:ci` merges unit and e2e runs into a single report and **fails the
+build below 80%** on statements, branches, functions and lines.
+
+To reproduce:
+
+```bash
+docker compose up -d
+pnpm test:ci        # prints the coverage summary, writes coverage/lcov.info
+```
 
 ## Docker
 
